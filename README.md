@@ -49,7 +49,7 @@ geniescript run analysis.genie --script-args="input_data.csv output_results.csv"
 1. Basic command output example:
 ```bash
 # Create a script that uses system commands
-echo "Create a Python script that uses the 'cat' command to output the first 10 prime numbers" > analysis.genie
+echo "Create a Python script that prints the first 10 prime numbers" > analysis.genie
 
 # Run it
 geniescript run analysis.genie
