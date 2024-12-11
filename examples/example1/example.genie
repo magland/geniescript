@@ -1,0 +1,8 @@
+// system system.md
+
+Create a function that calculates the Fibonacci sequence up to n terms.
+Then create a main section that:
+1. Gets n as a command line argument
+2. Validates that n is a positive integer
+3. Calls the function to generate the sequence
+4. Prints each number in the sequence on a new line

@@ -1,0 +1,6 @@
+Create a Python script that prints out all command line arguments that were passed to it.
+
+The script should:
+1. Import sys to access command line arguments
+2. Print each argument on a new line with its index
+3. Handle the case where no arguments were passed

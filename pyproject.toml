@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "geniescript"
+version = "0.1.0"
+description = "A Python package for generating and executing Python code using GPT-4"
+authors = []
+readme = "README.md"
+packages = [{include = "geniescript"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+click = "^8.0.0"
+openai = "^1.0.0"
+
+[tool.poetry.scripts]
+geniescript = "geniescript.cli:cli"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+pylint = "^3.3.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.messages_control]
+disable = ["line-too-long"]
