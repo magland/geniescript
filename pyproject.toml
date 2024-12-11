@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "geniescript"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Python package for generating and executing data processing scripts using AI language models"
 authors = ["Jeremy Magland <jmagland@flatironinstitute.org>"]
 readme = "README.md"
@@ -32,6 +32,7 @@ geniescript = "geniescript.cli:cli"
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 pylint = "^3.3.2"
+toml = "^0.10.2"
 
 [build-system]
 requires = ["poetry-core"]

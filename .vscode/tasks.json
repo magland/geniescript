@@ -72,6 +72,17 @@
                 "panel": "new"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "Bump Patch Version",
+            "type": "shell",
+            "command": "poetry run python scripts/bump_version.py",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
         }
     ]
 }
