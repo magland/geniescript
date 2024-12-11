@@ -1,10 +1,24 @@
 [tool.poetry]
 name = "geniescript"
 version = "0.1.0"
-description = "A Python package for generating and executing Python code using GPT-4"
-authors = []
+description = "A Python package for generating and executing data processing scripts using AI language models"
+authors = ["Jeremy Magland <jmagland@flatironinstitute.org>"]
 readme = "README.md"
 packages = [{include = "geniescript"}]
+license = "Apache-2.0"
+repository = "https://github.com/magland/geniescript"
+keywords = ["ai", "llm", "data-processing", "scientific-computing", "research-tools", "code-generation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Information Analysis"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"

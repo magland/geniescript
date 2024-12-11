@@ -1,6 +1,6 @@
 # geniescript
 
-A Python CLI tool for generating and executing Python code using GPT-4.
+A Python CLI tool that helps scientists and researchers generate and execute data processing scripts using AI language models. This tool simplifies the process of creating Python scripts for data analysis, transformation, and visualization tasks.
 
 ## Installation
 
@@ -15,43 +15,40 @@ pip install geniescript
 export OPENAI_API_KEY=your_api_key_here
 ```
 
-2. Create a source file (e.g., `script.genie`) with instructions for what you want the script to do.
+2. Create a source file (e.g., `analysis.genie`) with instructions describing your data processing task.
 
 3. Run the script:
 
 ```bash
-geniescript script.genie
+geniescript analysis.genie
 ```
 
 The tool will:
-- Generate a Python script based on your instructions using GPT-4
-- Save the generated code to `script.genie.py`
+- Generate a Python script based on your data processing instructions using AI
+- Save the generated code to `analysis.genie.py`
 - Execute the generated Python script
 
 If you run the command again with the same instructions, it will skip the generation step and directly execute the existing Python script.
 
 ### Command Options
 
-`--no-execute`: Generate the Python file without executing it. This is useful when you want to review or modify the generated code before running it.
+`--no-execute`: Generate the Python file without executing it. This is useful when you want to review or modify the generated code before processing your data.
 ```bash
-geniescript script.genie --no-execute
+geniescript analysis.genie --no-execute
 ```
 
-`--script-args`: Pass command line arguments to the generated Python script. These arguments will be accessible via sys.argv in the generated script.
+`--script-args`: Pass command line arguments to the generated Python script, such as input file paths or processing parameters. These arguments will be accessible via sys.argv in the generated script.
 ```bash
-geniescript script.genie --script-args="arg1 arg2 arg3"
+geniescript analysis.genie --script-args="input_data.csv output_results.csv"
 ```
 
-For example, if you have a script that processes command line arguments:
+For example, if you have a script that processes data files:
 ```bash
-# Create a script to handle arguments
-echo "Create a Python script that prints out all command line arguments that were passed to it." > args.genie
+# Create a script to analyze data
+echo "Create a Python script that reads a CSV file of experimental measurements, calculates basic statistics, and saves the results." > analyze.genie
 
-# Run it with arguments
-geniescript args.genie --script-args="hello world"
-# Output:
-# Argument 1: hello
-# Argument 2: world
+# Run it with input/output file paths
+geniescript analyze.genie --script-args="experiment_data.csv stats_results.csv"
 ```
 
 ### System Files
@@ -61,4 +58,4 @@ You can include system files in your instructions using the special comment synt
 // system path/to/system/file.txt
 ```
 
-These files will be included in the system prompt for the GPT-4 model.
+These files will be included in the system prompt for the AI model. This is useful for providing additional context about your data format, analysis requirements, or processing parameters.
