@@ -33,13 +33,6 @@ def run(
     force_regenerate: bool,
 ):
     """Run a genie script.
-
-    Args:
-        ctx: Click context
-        source_file_name: Path to the genie script file
-        no_execute: If True, only generate Python file without executing
-        script_args: Space-separated string of arguments to pass to the script
-        force_regenerate: If True, regenerate Python file even if no changes detected
     """
     if ctx.args:
         raise click.UsageError(f"Unknown arguments: {' '.join(ctx.args)}")
