@@ -19,8 +19,11 @@ def cli():
     "--no-execute", is_flag=True, help="Generate the Python file without executing it"
 )
 @click.option("--script-args", default="", help="Arguments to pass to the script")
+@click.option(
+    "--force-regenerate", is_flag=True, help="Force regeneration of the Python file regardless of changes"
+)
 @click.pass_context
-def run(ctx, source_file_name: str, no_execute: bool, script_args: str):
+def run(ctx, source_file_name: str, no_execute: bool, script_args: str, force_regenerate: bool):
     """Run a genie script.
 
     Args:
@@ -28,13 +31,14 @@ def run(ctx, source_file_name: str, no_execute: bool, script_args: str):
         source_file_name: Path to the genie script file
         no_execute: If True, only generate Python file without executing
         script_args: Space-separated string of arguments to pass to the script
+        force_regenerate: If True, regenerate Python file even if no changes detected
     """
     if ctx.args:
         raise click.UsageError(f"Unknown arguments: {' '.join(ctx.args)}")
 
     # Convert script_args string to list if not empty
     args_list: List[str] = script_args.split() if script_args else []
-    return run_impl(source_file_name, execute=not no_execute, script_args=args_list)
+    return run_impl(source_file_name, execute=not no_execute, script_args=args_list, force_regenerate=force_regenerate)
 
 
 cli.add_command(run)

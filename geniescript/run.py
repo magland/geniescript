@@ -3,41 +3,33 @@
 
 import os
 import shlex
-from typing import List, Optional, cast
+from typing import List, Optional, Tuple, cast
 from .completion import do_completion, ChatMessage
 from .instructions import get_instructions_from_py_file, insert_instructions_to_py_file
 from .util import sha1
 
 
-def run(
-    source_file_name: str, execute: bool = True, script_args: Optional[List[str]] = None
-) -> None:
+def process_source_file(source_file_name: str) -> Tuple[str, List[str], str]:
     """
-    Main function that processes a source file to generate and execute Python code.
+    Process the source file and extract system files.
 
     Args:
         source_file_name: Path to the source file to process
-        execute: Whether to execute the generated Python file
-        script_args: Optional list of arguments to pass to the script
-    """
-    # Get the directory containing the source file
-    parent_dir = os.path.dirname(source_file_name)
-    # Generate output Python filename by appending .py
-    py_fname = source_file_name + ".py"
 
-    # Read the source file content
+    Returns:
+        Tuple containing source text, system source files, and parent directory
+    """
+    parent_dir = os.path.dirname(source_file_name)
+
     with open(source_file_name, "r", encoding="utf-8") as f:
         source_text = f.read()
 
-    # List to store paths of system-related source files
     system_source_files: List[str] = []
-
-    # Process source file lines
     source_lines = source_text.split("\n")
     source_lines_to_use = []
+
     for line in source_lines:
         if line.startswith("//"):
-            # Handle special system file directives
             if line.startswith("// system"):
                 system_source_file = line.split(" ")[2]
                 system_source_file = os.path.join(parent_dir, system_source_file)
@@ -45,7 +37,19 @@ def run(
             continue
         source_lines_to_use.append(line)
 
-    # Combine content from all system files
+    return "\n".join(source_lines_to_use), system_source_files, parent_dir
+
+
+def process_system_files(system_source_files: List[str]) -> Tuple[str, str]:
+    """
+    Process system files and generate system text and hash.
+
+    Args:
+        system_source_files: List of system source file paths
+
+    Returns:
+        Tuple containing system text and its hash
+    """
     system_text = ""
     for system_file in system_source_files:
         print("Using system file:", system_file)
@@ -53,27 +57,37 @@ def run(
             system_text += f.read()
             system_text += "\n"
 
-    # Generate hash of system content for caching
-    system_hash = sha1(system_text)
-    instructions = f"system hash: {system_hash}\n{source_text}"
+    return system_text, sha1(system_text)
 
-    # Check if output file exists and if content has changed
+
+def check_cache(py_fname: str, instructions: str) -> bool:
+    """
+    Check if cached version exists and is valid.
+
+    Args:
+        py_fname: Path to the Python output file
+        instructions: Instructions to compare against cached version
+
+    Returns:
+        True if cache is valid, False otherwise
+    """
     if os.path.exists(py_fname):
         instructions_to_compare = get_instructions_from_py_file(py_fname)
-        if instructions_to_compare == instructions:
-            print("Instructions have not changed. Skipping code generation.")
-            if execute:
-                print("Executing code...")
-                cmd = f"python {shlex.quote(py_fname)}"
-                if script_args:
-                    cmd += " " + " ".join(shlex.quote(arg) for arg in script_args)
-                os.system(cmd)
-                print("Done!")
-            else:
-                print(f"Python file already exists at {py_fname}")
-            return
+        return instructions_to_compare == instructions
+    return False
 
-    # Define the system prompt for code generation
+
+def generate_code(system_text: str, source_text: str) -> str:
+    """
+    Generate Python code using the completion model.
+
+    Args:
+        system_text: System context for code generation
+        source_text: Source text to generate code from
+
+    Returns:
+        Generated Python code
+    """
     system_prompt = f"""
 You are a coding assitant that returns Python code based on the user's input.
 You should return a completely self-contained script that can be executed directly.
@@ -82,33 +96,72 @@ You should not return anything other than the script, because your output will b
 {system_text}
 """
 
-    # Prepare messages for the completion model
     messages: List[ChatMessage] = [
         cast(ChatMessage, {"role": "system", "content": system_prompt}),
-        cast(ChatMessage, {"role": "user", "content": "\n".join(source_lines_to_use)}),
+        cast(ChatMessage, {"role": "user", "content": source_text}),
     ]
 
-    # Generate code using the completion model
     print("Generating code...")
     response = do_completion(messages)
-    response = remove_code_block_ticks(response)
+    return remove_code_block_ticks(response)
 
-    # Insert instructions into the generated code
+
+def execute_script(py_fname: str, script_args: Optional[List[str]] = None) -> None:
+    """
+    Execute the generated Python script.
+
+    Args:
+        py_fname: Path to the Python file to execute
+        script_args: Optional list of arguments to pass to the script
+    """
+    print("Executing code...")
+    cmd = f"python {shlex.quote(py_fname)}"
+    if script_args:
+        cmd += " " + " ".join(shlex.quote(arg) for arg in script_args)
+    os.system(cmd)
+
+
+def run(
+    source_file_name: str, execute: bool = True, script_args: Optional[List[str]] = None,
+    force_regenerate: bool = False
+) -> None:
+    """
+    Main function that processes a source file to generate and execute Python code.
+
+    Args:
+        source_file_name: Path to the source file to process
+        execute: Whether to execute the generated Python file
+        script_args: Optional list of arguments to pass to the script
+        force_regenerate: Whether to force regeneration of the Python file regardless of changes
+    """
+    py_fname = source_file_name + ".py"
+
+    # Process source and system files
+    source_text, system_source_files, _ = process_source_file(source_file_name)
+    system_text, system_hash = process_system_files(system_source_files)
+
+    # Generate instructions with system hash
+    instructions = f"system hash: {system_hash}\n{source_text}"
+
+    # Check cache unless force regeneration is requested
+    if not force_regenerate and check_cache(py_fname, instructions):
+        print("Instructions have not changed. Skipping code generation.")
+        if execute:
+            execute_script(py_fname, script_args)
+        else:
+            print(f"Python file already exists at {py_fname}")
+        return
+
+    # Generate and save new code
+    response = generate_code(system_text, source_text)
     code = insert_instructions_to_py_file(response, instructions)
 
-    # Write the generated code to file
     with open(py_fname, "w", encoding="utf-8") as f:
         print("Writing code to", py_fname)
         f.write(code)
 
     if execute:
-        # Execute the generated code
-        print("Executing code...")
-        cmd = f"python {shlex.quote(py_fname)}"
-        if script_args:
-            cmd += " " + " ".join(shlex.quote(arg) for arg in script_args)
-        os.system(cmd)
-        print("Done!")
+        execute_script(py_fname, script_args)
     else:
         print(f"Python file generated at {py_fname}")
 

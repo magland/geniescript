@@ -1,6 +1,5 @@
 """
 system hash: 5d933f9c4b2916e71a4950ec6d368ee9005e8f74
-// system system.md
 
 Create a function that calculates the Fibonacci sequence up to n terms.
 Then create a main section that:
@@ -13,60 +12,58 @@ Then create a main section that:
 
 import sys
 
-
-def fibonacci_sequence(n: int) -> list[int]:
-    """Calculate the Fibonacci sequence up to n terms.
-
+def fibonacci(n: int) -> list[int]:
+    """Generate Fibonacci sequence up to n terms.
+    
     Args:
         n (int): The number of terms in the Fibonacci sequence to generate.
-
+        
     Returns:
-        list[int]: A list containing the Fibonacci sequence.
-
+        list[int]: A list containing the Fibonacci sequence up to n terms.
+        
     Raises:
         ValueError: If n is not a positive integer.
-
+        
     Example:
-        >>> fibonacci_sequence(5)
+        >>> fibonacci(5)
         [0, 1, 1, 2, 3]
     """
     if n <= 0:
-        raise ValueError("The number of terms must be a positive integer.")
+        raise ValueError("Number of terms must be a positive integer.")
+    
+    sequence = [0, 1]  # Initializing the first two Fibonacci numbers
 
-    sequence = [0, 1]
-    for _ in range(2, n):
-        # Calculate the next term by adding the last two terms
-        next_value = sequence[-1] + sequence[-2]
-        sequence.append(next_value)
-
+    # Generate the Fibonacci sequence iteratively
+    for i in range(2, n):
+        next_number = sequence[i - 1] + sequence[i - 2]
+        sequence.append(next_number)
+    
     return sequence[:n]
 
 
 def main():
-    """Main function to execute the Fibonacci sequence generation.
-
-    Gets the number of terms from the command line arguments, validates it, and
-    prints each number in the Fibonacci sequence on a new line.
-
-    Example:
-        $ python fibonacci.py 5
-        0
-        1
-        1
-        2
-        3
-    """
+    """Main function to execute Fibonacci sequence generation from command line arguments."""
     if len(sys.argv) != 2:
-        print("Usage: python fibonacci.py <number_of_terms>")
+        print("Usage: python script_name.py <n>")
         sys.exit(1)
-
+    
     try:
         n = int(sys.argv[1])
-        fibonacci = fibonacci_sequence(n)
-        for number in fibonacci:
-            print(number)
+    except ValueError:
+        print("Please enter a valid positive integer for n.")
+        sys.exit(1)
+        
+    if n <= 0:
+        print("Please enter a positive integer.")
+        sys.exit(1)
+    
+    # Generate the Fibonacci sequence and print each element
+    try:
+        fib_sequence = fibonacci(n)
+        for num in fib_sequence:
+            print(num)
     except ValueError as e:
-        print(f"Error: {e}")
+        print(e)
         sys.exit(1)
 
 
