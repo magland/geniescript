@@ -27,7 +27,7 @@ jobs:
       run: poetry install
 
     - name: Run linting
-      run: poetry run pylint geniescript tests
+      run: poetry run pylint geniescript
 
     - name: Run tests with coverage
       run: poetry run pytest --cov=geniescript tests/
