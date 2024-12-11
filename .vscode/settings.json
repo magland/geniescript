@@ -1,0 +1,12 @@
+{
+    "coverage-gutters.showGutterCoverage": true,
+    "coverage-gutters.showLineCoverage": true,
+    "coverage-gutters.showRulerCoverage": true,
+    "coverage-gutters.coverageFileNames": [
+        "coverage.xml",
+        "lcov.info",
+        ".coverage"
+    ],
+    "coverage-gutters.coverageReportFileName": "htmlcov/index.html",
+    "coverage-gutters.ignoredPathGlobs": "**/{test,tests,node_modules,venv,.venv}/**"
+}

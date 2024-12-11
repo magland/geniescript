@@ -1,11 +1,14 @@
+"""Tests for the completion functionality in geniescript.completion."""
+
 import os
-import pytest
 from unittest.mock import patch, MagicMock
+import pytest
 from geniescript.completion import do_completion
 
 
 @pytest.fixture
-def mock_openai_client():
+def openai_client_mock():
+    """Fixture that provides a mocked OpenAI client for testing."""
     with patch("openai.Client") as mock_client:
         yield mock_client
 
@@ -18,12 +21,12 @@ def test_missing_api_key():
         assert str(exc_info.value) == "OPENAI_API_KEY environment variable not set."
 
 
-def test_successful_completion(mock_openai_client):
+def test_successful_completion(openai_client_mock):
     """Test successful completion with mocked OpenAI response"""
     # Setup mock response
     mock_response = MagicMock()
     mock_response.choices[0].message.content = "Test response"
-    mock_client_instance = mock_openai_client.return_value
+    mock_client_instance = openai_client_mock.return_value
     mock_client_instance.chat.completions.create.return_value = mock_response
 
     # Set mock API key
@@ -37,12 +40,12 @@ def test_successful_completion(mock_openai_client):
     )
 
 
-def test_failed_completion(mock_openai_client):
+def test_failed_completion(openai_client_mock):
     """Test handling of failed completion where response is None"""
     # Setup mock response with None content
     mock_response = MagicMock()
     mock_response.choices[0].message.content = None
-    mock_client_instance = mock_openai_client.return_value
+    mock_client_instance = openai_client_mock.return_value
     mock_client_instance.chat.completions.create.return_value = mock_response
 
     # Set mock API key

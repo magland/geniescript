@@ -38,4 +38,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pylint.messages_control]
-disable = ["line-too-long"]
+disable = ["line-too-long", "redefined-outer-name"]

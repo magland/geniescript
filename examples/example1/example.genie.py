@@ -12,58 +12,62 @@ Then create a main section that:
 
 import sys
 
-def fibonacci(n: int) -> list[int]:
-    """Generate Fibonacci sequence up to n terms.
-    
+def calculate_fibonacci(n: int) -> list[int]:
+    """Calculate the Fibonacci sequence up to n terms.
+
     Args:
         n (int): The number of terms in the Fibonacci sequence to generate.
-        
+
     Returns:
-        list[int]: A list containing the Fibonacci sequence up to n terms.
-        
+        list: A list of integers representing the Fibonacci sequence.
+
     Raises:
-        ValueError: If n is not a positive integer.
-        
+        ValueError: If n is less than or equal to zero.
+
     Example:
-        >>> fibonacci(5)
+        >>> calculate_fibonacci(5)
         [0, 1, 1, 2, 3]
     """
     if n <= 0:
         raise ValueError("Number of terms must be a positive integer.")
     
-    sequence = [0, 1]  # Initializing the first two Fibonacci numbers
+    if n == 1:
+        return [0]
 
-    # Generate the Fibonacci sequence iteratively
+    fibonacci_sequence = [0, 1]  # Starting values for the sequence
+
+    # Generate Fibonacci sequence
     for i in range(2, n):
-        next_number = sequence[i - 1] + sequence[i - 2]
-        sequence.append(next_number)
-    
-    return sequence[:n]
+        next_value = fibonacci_sequence[-1] + fibonacci_sequence[-2]
+        fibonacci_sequence.append(next_value)
+
+    return fibonacci_sequence
 
 
-def main():
-    """Main function to execute Fibonacci sequence generation from command line arguments."""
+def main() -> None:
+    """Main function to get number of terms from command line and print the Fibonacci sequence."""
+    # Check command line arguments
     if len(sys.argv) != 2:
-        print("Usage: python script_name.py <n>")
+        print("Usage: python script.py <number_of_terms>")
         sys.exit(1)
-    
+
     try:
         n = int(sys.argv[1])
     except ValueError:
-        print("Please enter a valid positive integer for n.")
+        print("Error: The number of terms must be an integer.")
         sys.exit(1)
-        
+
     if n <= 0:
-        print("Please enter a positive integer.")
+        print("Error: The number of terms must be a positive integer.")
         sys.exit(1)
-    
-    # Generate the Fibonacci sequence and print each element
+
+    # Calculate and print the Fibonacci sequence
     try:
-        fib_sequence = fibonacci(n)
-        for num in fib_sequence:
-            print(num)
+        fibonacci_sequence = calculate_fibonacci(n)
+        for number in fibonacci_sequence:
+            print(number)
     except ValueError as e:
-        print(e)
+        print(f"Error: {e}")
         sys.exit(1)
 
 

@@ -1,3 +1,5 @@
+"""Tests for utility functions in geniescript.util."""
+
 from geniescript.util import sha1
 
 

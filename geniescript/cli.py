@@ -20,10 +20,18 @@ def cli():
 )
 @click.option("--script-args", default="", help="Arguments to pass to the script")
 @click.option(
-    "--force-regenerate", is_flag=True, help="Force regeneration of the Python file regardless of changes"
+    "--force-regenerate",
+    is_flag=True,
+    help="Force regeneration of the Python file regardless of changes",
 )
 @click.pass_context
-def run(ctx, source_file_name: str, no_execute: bool, script_args: str, force_regenerate: bool):
+def run(
+    ctx,
+    source_file_name: str,
+    no_execute: bool,
+    script_args: str,
+    force_regenerate: bool,
+):
     """Run a genie script.
 
     Args:
@@ -38,7 +46,12 @@ def run(ctx, source_file_name: str, no_execute: bool, script_args: str, force_re
 
     # Convert script_args string to list if not empty
     args_list: List[str] = script_args.split() if script_args else []
-    return run_impl(source_file_name, execute=not no_execute, script_args=args_list, force_regenerate=force_regenerate)
+    return run_impl(
+        source_file_name,
+        execute=not no_execute,
+        script_args=args_list,
+        force_regenerate=force_regenerate,
+    )
 
 
 cli.add_command(run)

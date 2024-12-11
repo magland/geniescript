@@ -122,8 +122,10 @@ def execute_script(py_fname: str, script_args: Optional[List[str]] = None) -> No
 
 
 def run(
-    source_file_name: str, execute: bool = True, script_args: Optional[List[str]] = None,
-    force_regenerate: bool = False
+    source_file_name: str,
+    execute: bool = True,
+    script_args: Optional[List[str]] = None,
+    force_regenerate: bool = False,
 ) -> None:
     """
     Main function that processes a source file to generate and execute Python code.
