@@ -2,6 +2,8 @@
 
 ![Test](https://github.com/magland/geniescript/actions/workflows/test.yml/badge.svg)
 
+:warning: OpenAI's GPT-4o is not yet at the point where you can reliably let it generate code and execute without errors. So this project is a placeholder until that time arrives. But feel free to play around with it anyway!
+
 A Python CLI tool that helps scientists and researchers generate and execute data processing scripts using AI language models. This tool simplifies the process of creating Python scripts for data analysis, transformation, and visualization tasks.
 
 ## Installation
